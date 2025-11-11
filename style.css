@@ -17,6 +17,20 @@ body{
   text-rendering:optimizeLegibility;
 }
 
+[data-reveal]{
+  opacity:0;
+  transform:translateY(42px) scale(.98);
+  transition:opacity .72s ease, transform .72s ease;
+  will-change:opacity, transform;
+}
+[data-reveal].is-visible{
+  opacity:1;
+  transform:translateY(0) scale(1);
+}
+[data-reveal="delay-1"]{transition-delay:.18s}
+[data-reveal="delay-2"]{transition-delay:.32s}
+[data-reveal="delay-3"]{transition-delay:.46s}
+
 .top-bar{
   background:rgba(8,30,38,.82);
   backdrop-filter:blur(10px);
@@ -64,6 +78,8 @@ body{
 .footer__links a:focus-visible::after{transform:scaleX(1)}
 .top-nav a:focus-visible,
 .footer__links a:focus-visible{outline:2px solid var(--kelp);outline-offset:2px}
+.top-nav a.active{color:var(--kelp)}
+.top-nav a.active::after{transform:scaleX(1)}
 
 .wrap{max-width:1080px;margin:0 auto;padding:0 20px}
 h1,h2,h3{margin:0 0 .5rem}
@@ -108,17 +124,17 @@ h3{font-size:1.15rem;color:var(--ink)}
 }
 .hero__body{padding:80px 20px 0}
 .hero__inner{display:flex;align-items:center;justify-content:space-between;gap:48px}
-.hero__content{flex:1;max-width:560px;color:#fff;text-align:left}
-.hero__eyebrow{display:inline-flex;align-items:center;gap:12px;font-size:.85rem;letter-spacing:3.5px;text-transform:uppercase;color:rgba(255,255,255,.7);margin-bottom:12px;position:relative}
+.hero__content{flex:1;max-width:620px;color:#fff;text-align:left}
+.hero__eyebrow{display:inline-flex;align-items:center;gap:14px;font-size:.95rem;letter-spacing:4.2px;text-transform:uppercase;color:rgba(255,255,255,.75);margin-bottom:18px;position:relative}
 .hero__eyebrow::after{content:"";flex:1;height:1px;background:rgba(255,255,255,.35);min-width:64px}
-.hero h1{color:var(--kelp);margin-bottom:18px;font-size:clamp(2.9rem, 5vw, 4.8rem);line-height:1.06;text-shadow:0 18px 38px rgba(0,0,0,.35)}
-.hero .lead{margin:0 0 26px;font-size:clamp(1.08rem,2.1vw,1.42rem);max-width:520px}
+.hero h1{color:var(--kelp);margin-bottom:22px;font-size:clamp(3.4rem, 6vw, 6.2rem);line-height:1.02;text-shadow:0 22px 48px rgba(0,0,0,.38)}
+.hero .lead{margin:0 0 32px;font-size:clamp(1.18rem,2.4vw,1.6rem);max-width:560px}
 .hero .cta .btn{min-width:0}
 .logo--compact{width:140px;filter:none;margin:0}
 .hero h1{color:var(--kelp)}
 .hero .cta{margin-top:0;display:flex;gap:14px;flex-wrap:wrap;justify-content:flex-start}
-.trust{display:flex;gap:16px;justify-content:flex-start;margin-top:26px;font-weight:600;font-size:.95rem;flex-wrap:wrap;color:rgba(255,255,255,.8)}
-.trust span{text-transform:uppercase;letter-spacing:1.2px;font-size:.78rem;color:rgba(255,255,255,.72);background:rgba(255,255,255,.08);padding:8px 12px;border-radius:999px}
+.trust{display:flex;gap:16px;justify-content:flex-start;margin-top:32px;font-weight:600;font-size:1.05rem;flex-wrap:wrap;color:rgba(255,255,255,.82)}
+.trust span{text-transform:uppercase;letter-spacing:1.6px;font-size:.82rem;color:rgba(255,255,255,.8);background:rgba(185,158,51,.18);padding:10px 16px;border-radius:999px;border:1px solid rgba(255,255,255,.18)}
 .hero__visual{flex:1;display:flex;flex-direction:column;gap:18px;align-items:flex-end;position:relative}
 .hero__visual::before{content:"";position:absolute;width:420px;height:420px;border-radius:50%;background:linear-gradient(140deg, rgba(185,158,51,.55) 0%, rgba(10,46,58,0) 75%);top:120px;right:8%;filter:blur(40px);opacity:.4}
 .hero-mock{width:100%;max-width:440px;background:rgba(10,46,58,.68);border:1px solid rgba(255,255,255,.12);border-radius:26px;padding:26px 28px;box-shadow:0 40px 90px rgba(0,0,0,.32);backdrop-filter:blur(12px);transform:rotate(-3.5deg);position:relative}
@@ -238,9 +254,11 @@ h3{font-size:1.15rem;color:var(--ink)}
   .hero__inner{flex-direction:column}
   .hero__visual{width:100%;align-items:center}
   .hero-mock{max-width:460px}
+  .hero h1{text-align:center}
+  .hero__content{max-width:680px}
 }
 @media (max-width:640px){
-  h1{font-size:2.4rem}
+  h1{font-size:2.8rem}
   .top-bar__inner{flex-wrap:wrap}
   .top-nav{order:3;width:100%;justify-content:center;padding-top:6px;border-top:1px solid rgba(255,255,255,.08)}
   .btn-ghost--outline{order:2}
