@@ -83,9 +83,9 @@ body{
 
 .wrap{max-width:1080px;margin:0 auto;padding:0 20px}
 h1,h2,h3{margin:0 0 .5rem}
-h1{font-size:3.2rem;letter-spacing:.5px}
-h2{font-size:2rem;color:var(--kelp)}
-h3{font-size:1.15rem;color:var(--ink)}
+h1{font-size:clamp(3.2rem, 6vw, 5.6rem);letter-spacing:.5px}
+h2{font-size:clamp(2.4rem, 4.2vw, 3.6rem);color:var(--kelp)}
+h3{font-size:clamp(1.3rem, 2.4vw, 1.9rem);color:var(--ink)}
 
 .lead{max-width:750px;margin:12px auto 0;opacity:.9}
 
