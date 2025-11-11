@@ -28,12 +28,12 @@
     .cookie-banner.is-visible{transform:translateY(0);opacity:1}
     .cookie-banner p{margin:0;flex:1;font-size:.95rem;color:rgba(243,245,238,.92)}
     .cookie-banner__button{white-space:nowrap}
-    .float-cta{position:fixed;right:28px;bottom:28px;z-index:14;transform:translateY(140%);opacity:0;transition:opacity .35s ease,transform .35s ease;box-shadow:0 30px 60px rgba(0,0,0,.35)}
-    .float-cta.is-visible{transform:translateY(0);opacity:1}
+    .float-cta{position:fixed;right:28px;bottom:28px;z-index:14;transform:translateY(140%);opacity:0;transition:opacity .35s ease,transform .35s ease;box-shadow:0 30px 60px rgba(0,0,0,.35);pointer-events:none}
+    .float-cta.is-visible{transform:translateY(0);opacity:1;pointer-events:auto}
     .float-cta a{display:inline-flex;align-items:center;gap:8px;padding:16px 22px;border-radius:999px}
     .float-cta a::before{content:"";width:10px;height:10px;border-radius:50%;background:#1b1b1b;opacity:.4}
-    .scroll-panel{position:fixed;right:28px;bottom:96px;z-index:13;background:rgba(8,30,38,.9);color:#f4f7f2;padding:14px 18px;border-radius:16px;display:flex;align-items:center;gap:14px;box-shadow:0 26px 48px rgba(0,0,0,.3);backdrop-filter:blur(12px);transform:translateY(140%);opacity:0;transition:opacity .35s ease,transform .35s ease}
-    .scroll-panel.is-visible{transform:translateY(0);opacity:1}
+    .scroll-panel{position:fixed;right:28px;bottom:96px;z-index:13;background:rgba(8,30,38,.9);color:#f4f7f2;padding:14px 18px;border-radius:16px;display:flex;align-items:center;gap:14px;box-shadow:0 26px 48px rgba(0,0,0,.3);backdrop-filter:blur(12px);transform:translateY(140%);opacity:0;transition:opacity .35s ease,transform .35s ease;pointer-events:none}
+    .scroll-panel.is-visible{transform:translateY(0);opacity:1;pointer-events:auto}
     .scroll-panel__meter{flex:1;height:6px;border-radius:999px;background:rgba(255,255,255,.18);overflow:hidden}
     .scroll-panel__meter span{display:block;height:100%;width:0;background:var(--kelp);border-radius:inherit;transition:width .2s ease}
     .scroll-panel__btn{border:none;background:rgba(255,255,255,.12);color:#fff;padding:6px 12px;border-radius:999px;font-size:.85rem;font-weight:600;letter-spacing:.4px;text-transform:uppercase;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
@@ -467,7 +467,12 @@
         const scrollTop = window.scrollY || document.documentElement.scrollTop;
         const docHeight = document.documentElement.scrollHeight - window.innerHeight;
         const progress = docHeight > 0 ? scrollTop / docHeight : 0;
-        floatCta.classList.toggle("is-visible", progress >= 0.5);
+        const footer = document.querySelector("footer");
+        const footerRect = footer ? footer.getBoundingClientRect() : null;
+        const footerVisible = footerRect ? footerRect.top < window.innerHeight - 120 : false;
+        const isVisible = progress >= 0.5 && !footerVisible;
+        floatCta.classList.toggle("is-visible", isVisible);
+        floatCta.setAttribute("aria-hidden", String(!isVisible));
       };
 
       let ticking = false;
@@ -496,7 +501,9 @@
         const docHeight = document.documentElement.scrollHeight - window.innerHeight;
         const progress = docHeight > 0 ? scrollTop / docHeight : 0;
         if (meter) meter.style.width = `${Math.min(progress * 100, 100)}%`;
-        scrollPanel.classList.toggle("is-visible", progress >= 0.3);
+        const isVisible = progress >= 0.3;
+        scrollPanel.classList.toggle("is-visible", isVisible);
+        scrollPanel.setAttribute("aria-hidden", String(!isVisible));
       };
 
       let tickingPanel = false;
