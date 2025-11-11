@@ -14,6 +14,11 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <div class="cookie-banner" role="status" aria-live="polite">
+    <p>En huiro.dev no utilizamos cookies ni rastreadores. Guardamos solo la información que nos envías por correo.</p>
+    <button type="button" class="btn btn-primary cookie-banner__button">Entendido</button>
+  </div>
+
   <!-- Hero -->
   <header class="hero">
     <div class="top-bar">
@@ -257,6 +262,30 @@
         }
       );
       revealEls.forEach((el) => revealObserver.observe(el));
+    }
+
+    const cookieBanner = document.querySelector(".cookie-banner");
+    if (cookieBanner) {
+      const storageKey = "huiro-cookie-info";
+      const dismissBtn = cookieBanner.querySelector(".cookie-banner__button");
+      const showBanner = () => cookieBanner.classList.add("is-visible");
+
+      try {
+        if (!window.localStorage.getItem(storageKey)) {
+          requestAnimationFrame(showBanner);
+        }
+      } catch (err) {
+        requestAnimationFrame(showBanner);
+      }
+
+      dismissBtn?.addEventListener("click", () => {
+        try {
+          window.localStorage.setItem(storageKey, "dismissed");
+        } catch (err) {
+          /* ignore storage errors */
+        }
+        cookieBanner.classList.remove("is-visible");
+      });
     }
   </script>
 </body>
