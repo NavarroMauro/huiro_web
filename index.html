@@ -32,9 +32,11 @@
   <meta name="twitter:description"
     content="Soluciones digitales para organizaciones chilenas: reportes, pagos conciliados, certificados y automatizaciones." />
   <meta name="twitter:image" content="https://huiro.dev/huiro-og.png" />
+  <link rel="preconnect" href="https://plausible.io" crossorigin />
+  <link rel="preconnect" href="https://www.google.com" crossorigin />
+  <link rel="preconnect" href="https://www.gstatic.com" crossorigin />
   <link rel="icon" type="image/png" href="/huiro-logo.png" />
-  <link rel="stylesheet" href="assets/fontawesome/css/fontawesome.min.css" />
-  <link rel="stylesheet" href="assets/fontawesome/css/solid.min.css" />
+  <link rel="stylesheet" href="assets/fontawesome/css/fa-subset.css" />
   <link rel="stylesheet" href="style.css" />
   <script type="application/ld+json">
   {
@@ -91,13 +93,25 @@
       <div class="wrap top-bar__inner">
         <img class="logo logo--compact" src="huiro-logo.png" alt="Logo huiro.dev" width="150"
           fetchpriority="high" decoding="async" />
-        <nav class="top-nav" aria-label="Principal">
-          <a href="#servicios" data-scroll>Servicios</a>
-          <a href="#caso" data-scroll>Caso</a>
-          <a href="#tecnologias" data-scroll>Tecnologías</a>
-          <a href="#contacto" data-scroll>Contacto</a>
+        <button class="top-nav__toggle" type="button" aria-expanded="false" aria-controls="site-nav">
+          <span class="top-nav__toggle-lines" aria-hidden="true">
+            <span></span>
+            <span></span>
+            <span></span>
+          </span>
+          <span class="visually-hidden">Abrir menú</span>
+        </button>
+        <nav id="site-nav" class="top-nav" aria-label="Principal">
+          <div class="top-nav__links">
+            <a href="#servicios" data-scroll>Servicios</a>
+            <a href="#caso" data-scroll>Caso</a>
+            <a href="#tecnologias" data-scroll>Tecnologías</a>
+            <a href="#contacto" data-scroll>Contacto</a>
+          </div>
+          <a class="btn btn-ghost btn-ghost--outline top-nav__cta" href="#contacto" data-scroll>Hablemos</a>
         </nav>
-        <a class="btn btn-ghost btn-ghost--outline" href="#contacto" data-scroll>Hablemos</a>
+        <div class="top-nav__backdrop" data-nav-backdrop></div>
+        <a class="btn btn-ghost btn-ghost--outline top-bar__cta" href="#contacto" data-scroll>Hablemos</a>
       </div>
     </div>
     <div class="wrap hero__body" data-section="hero">
@@ -461,6 +475,86 @@
     const topBar = document.querySelector(".top-bar");
     const scrollLinks = document.querySelectorAll("[data-scroll]");
     const navLinks = new Map();
+    const navToggle = document.querySelector(".top-nav__toggle");
+    const navToggleLabel = navToggle?.querySelector(".visually-hidden");
+    const siteNav = document.getElementById("site-nav");
+    const navBackdrop = document.querySelector("[data-nav-backdrop]");
+    const mobileNavQuery = window.matchMedia("(max-width: 768px)");
+
+    const setNavState = (isOpen) => {
+      if (!navToggle || !siteNav) return;
+      navToggle.setAttribute("aria-expanded", String(isOpen));
+      if (navToggleLabel) {
+        navToggleLabel.textContent = isOpen ? "Cerrar menú" : "Abrir menú";
+      }
+      siteNav.classList.toggle("is-open", isOpen);
+      if (mobileNavQuery.matches) {
+        siteNav.setAttribute("aria-hidden", isOpen ? "false" : "true");
+      } else {
+        siteNav.setAttribute("aria-hidden", "false");
+      }
+      document.body.classList.toggle("nav-open", isOpen);
+      if (navBackdrop) {
+        navBackdrop.classList.toggle("is-visible", isOpen);
+      }
+    };
+
+    const closeNav = (focusToggle = false) => {
+      if (!navToggle || !siteNav) return;
+      setNavState(false);
+      if (focusToggle) {
+        navToggle.focus({ preventScroll: true });
+      }
+    };
+
+    const openNav = () => {
+      if (!navToggle || !siteNav) return;
+      setNavState(true);
+      if (mobileNavQuery.matches) {
+        const firstLink = siteNav.querySelector("a");
+        firstLink?.focus({ preventScroll: true });
+      }
+    };
+
+    navToggle?.addEventListener("click", () => {
+      const isExpanded = navToggle.getAttribute("aria-expanded") === "true";
+      if (isExpanded) {
+        closeNav();
+      } else {
+        openNav();
+      }
+    });
+
+    navBackdrop?.addEventListener("click", () => closeNav());
+
+    siteNav?.addEventListener("click", (event) => {
+      const target = event.target;
+      if (target instanceof HTMLElement && target.matches("[data-scroll]")) {
+        closeNav();
+      }
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && navToggle?.getAttribute("aria-expanded") === "true") {
+        closeNav(true);
+      }
+    });
+
+    const handleNavBreakpoint = (event) => {
+      if (!event.matches) {
+        closeNav();
+      }
+    };
+
+    if (typeof mobileNavQuery.addEventListener === "function") {
+      mobileNavQuery.addEventListener("change", handleNavBreakpoint);
+    } else if (typeof mobileNavQuery.addListener === "function") {
+      mobileNavQuery.addListener(handleNavBreakpoint);
+    }
+
+    if (navToggle && siteNav) {
+      setNavState(false);
+    }
 
     const contactForm = document.querySelector(".contact-form");
     if (contactForm) {
