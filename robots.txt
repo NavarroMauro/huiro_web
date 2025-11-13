@@ -1,3 +1,13 @@
+# robots.txt — huiro.dev
+# Controla el acceso de rastreadores y define la ubicación del sitemap
+
 User-agent: *
 Allow: /
+
+# Evita rastrear carpetas internas de deploy o configuraciones (por si acaso)
+Disallow: /admin/
+Disallow: /_*
+
+# Sitemap oficial
 Sitemap: https://huiro.dev/sitemap.xml
+
