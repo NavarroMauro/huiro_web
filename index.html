@@ -89,7 +89,8 @@
   <header class="hero">
     <div class="top-bar">
       <div class="wrap top-bar__inner">
-        <img class="logo logo--compact" src="huiro-logo.png" alt="Logo huiro.dev" />
+        <img class="logo logo--compact" src="huiro-logo.png" alt="Logo huiro.dev" width="150" height="130"
+          fetchpriority="high" decoding="async" />
         <nav class="top-nav" aria-label="Principal">
           <a href="#servicios" data-scroll>Servicios</a>
           <a href="#caso" data-scroll>Caso</a>
@@ -405,7 +406,8 @@
       <div class="footer__grid">
         <div class="footer__brand">
           <span class="footer__pill">huiro.dev</span>
-          <img class="footer__logo" src="huiro-logo.png" alt="huiro.dev" />
+          <img class="footer__logo" src="huiro-logo.png" alt="huiro.dev" width="150" height="130" loading="lazy"
+            decoding="async" />
           <p>Transformamos planillas y procesos manuales en plataformas seguras con reportes, pagos e integraciones
             confiables.</p>
         </div>
@@ -714,12 +716,14 @@
         const scrollTop = window.scrollY || document.documentElement.scrollTop;
         const docHeight = document.documentElement.scrollHeight - window.innerHeight;
         const progress = docHeight > 0 ? scrollTop / docHeight : 0;
-        if (meter) meter.style.width = `${Math.min(progress * 100, 100)}%`;
         const contactRect = contactSection ? contactSection.getBoundingClientRect() : null;
         const contactInView = contactRect ? contactRect.top <= window.innerHeight * 0.6 : false;
         const footerRect = footerEl ? footerEl.getBoundingClientRect() : null;
         const footerVisible = footerRect ? footerRect.top <= window.innerHeight * 0.75 : false;
         const isVisible = progress >= 0.3 && !contactInView && !footerVisible;
+        if (meter) {
+          meter.style.width = `${Math.min(progress * 100, 100)}%`;
+        }
         scrollPanel.classList.toggle("is-visible", isVisible);
         scrollPanel.setAttribute("aria-hidden", String(!isVisible));
       };
