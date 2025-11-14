@@ -115,9 +115,11 @@
             <a href="#servicios" data-scroll>Servicios</a>
             <a href="#caso" data-scroll>Caso</a>
             <a href="#tecnologias" data-scroll>Tecnologías</a>
-            <a href="#contacto" data-scroll>Contacto</a>
           </div>
-          <a class="btn btn-ghost btn-ghost--outline top-nav__cta" href="#contacto" data-scroll>Hablemos</a>
+          <a class="btn top-nav__cta" href="#contacto" data-scroll>
+            <span>Hablemos</span>
+            <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+          </a>
         </nav>
         <div class="top-nav__backdrop" data-nav-backdrop></div>
       </div>
@@ -133,11 +135,20 @@
             <a class="btn btn-primary" href="#contacto" data-scroll>Agenda un discovery</a>
             <a class="btn btn-ghost" href="#servicios" data-scroll>Ver servicios</a>
           </div>
-          <div class="trust">
-            <span><i class="fa-solid fa-award" aria-hidden="true"></i>+10 años construyendo productos</span>
-            <span><i class="fa-solid fa-handshake" aria-hidden="true"></i>SLAs personalizados</span>
-            <span><i class="fa-solid fa-shield-halved" aria-hidden="true"></i>Stack moderno y seguro</span>
-          </div>
+          <ul class="trust" role="list">
+            <li class="trust__item">
+              <i class="fa-solid fa-award" aria-hidden="true"></i>
+              <span>+10 años construyendo productos</span>
+            </li>
+            <li class="trust__item">
+              <i class="fa-solid fa-handshake" aria-hidden="true"></i>
+              <span>SLAs personalizados</span>
+            </li>
+            <li class="trust__item">
+              <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
+              <span>Stack moderno y seguro</span>
+            </li>
+          </ul>
         </div>
         <div class="hero__visual" aria-hidden="true" data-reveal="delay-1">
           <div class="hero-mock">
@@ -333,7 +344,7 @@
       <p>Envíanos contexto de tus procesos actuales y coordinamos un diagnóstico express para definir las próximas
         fases.</p>
       <form class="contact-form" name="contacto" method="POST" action="/gracias.html" data-netlify="true"
-        data-netlify-recaptcha="true" netlify-honeypot="bot-field" novalidate>
+        data-netlify-recaptcha="true" data-netlify-honeypot="bot-field" novalidate>
         <input type="hidden" name="form-name" value="contacto" />
         <p class="visually-hidden">
           <label>Si eres humano, deja este campo vacío.
@@ -372,6 +383,9 @@
             autocomplete="off"></textarea>
           <p class="form-field__hint" id="contacto-mensaje-hint">Describe el proceso actual, herramientas usadas y
             qué resultados esperas.</p>
+          <p class="form-field__counter" id="contacto-mensaje-counter" aria-live="polite" data-counter="message">
+            0 / 20 caracteres
+          </p>
           <p class="form-field__error" id="contacto-mensaje-error" aria-live="polite"></p>
         </div>
         <div data-netlify-recaptcha></div>
@@ -568,6 +582,31 @@
     if (contactForm) {
       const statusRegion = contactForm.querySelector("[data-form-status]");
       const fields = Array.from(contactForm.querySelectorAll("[data-validate]"));
+      const messageField = contactForm.querySelector("[data-validate='message']");
+      const messageCounter = contactForm.querySelector("[data-counter='message']");
+      const messageMinLength = messageField ? Number(messageField.getAttribute("minlength") || "0") : 0;
+
+      const formatCounterText = (current, min) => {
+        if (!min) return `${current} caracteres`;
+        return `${current} / ${min} caracteres`;
+      };
+
+      const syncMessageCounter = () => {
+        if (!messageField || !messageCounter) return;
+        const currentLength = messageField.value.trim().length;
+        messageCounter.textContent = formatCounterText(currentLength, messageMinLength);
+        messageCounter.dataset.state = currentLength < messageMinLength ? "under" : "valid";
+      };
+
+      const setMessageCounterFocus = (isFocused) => {
+        if (!messageCounter) return;
+        if (isFocused) {
+          messageCounter.dataset.focused = "true";
+        } else {
+          delete messageCounter.dataset.focused;
+        }
+      };
+
       const validators = {
         name(value) {
           const normalized = value.trim().replace(/\s+/g, " ");
@@ -622,6 +661,9 @@
             statusRegion.textContent = "";
           }
         }
+        if (field === messageField) {
+          syncMessageCounter();
+        }
       };
 
       const validateField = (field) => {
@@ -650,7 +692,23 @@
             validateField(field);
           }
         });
+        if (field === messageField) {
+          field.addEventListener("input", () => {
+            syncMessageCounter();
+          });
+          field.addEventListener("focus", () => {
+            setMessageCounterFocus(true);
+            syncMessageCounter();
+          });
+          field.addEventListener("blur", () => {
+            setMessageCounterFocus(false);
+            syncMessageCounter();
+          });
+        }
       });
+
+      syncMessageCounter();
+      setMessageCounterFocus(false);
 
       contactForm.addEventListener("submit", (event) => {
         let hasErrors = false;
@@ -676,6 +734,9 @@
               field.value = field.value.trim();
             } else {
               field.value = field.value.trim();
+            }
+            if (field === messageField) {
+              syncMessageCounter();
             }
           });
           if (statusRegion) {
@@ -914,6 +975,7 @@
       });
     }
   </script>
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </body>
 
 </html>
